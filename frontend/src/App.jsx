@@ -1,15 +1,24 @@
-import useTheme from "./hooks/useTheme";
-
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './components/Layout';
+import UserList from './components/UserList';
+import UserDetail from './components/UserDetail';
+import UserForm from './components/UserForm';
 
 function App() {
-  const { theme, toggleTheme } = useTheme();
-
   return (
-    <>
-      <h1 className='text-red-500 dark:text-white bg-white dark:bg-black'>Hello World</h1>
-      <button onClick={toggleTheme}>{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</button>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Navigate to="/users" replace />} />
+          <Route path="users" element={<UserList />} />
+          <Route path="users/:id" element={<UserDetail />} />
+          <Route path="create-user" element={<UserForm />} />
+          <Route path="edit-user/:id" element={<UserForm />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
