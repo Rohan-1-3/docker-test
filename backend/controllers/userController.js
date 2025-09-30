@@ -3,45 +3,143 @@ import redisClient from "../services/redisService.js";
 
 const prisma = new PrismaClient();
 
-// Get all users
+// Get all users with pagination, filtering, and sorting
 export const getUsers = async (req, res) => {
     try {
         const startTime = performance.now();
-        const cacheKey = "users:all";
+        
+        // Extract query parameters
+        const {
+            page = 1,
+            limit = 10,
+            sortBy = 'createdAt',
+            sortOrder = 'desc',
+            search,
+            isActive,
+            city,
+            state,
+            country,
+            occupation,
+            company
+        } = req.query;
+
+        // Validate pagination parameters
+        const pageNum = Math.max(1, parseInt(page));
+        const limitNum = Math.min(100, Math.max(1, parseInt(limit))); // Max 100 items per page
+        const skip = (pageNum - 1) * limitNum;
+
+        // Validate sort parameters
+        const validSortFields = ['firstName', 'lastName', 'email', 'createdAt', 'updatedAt', 'city', 'state', 'occupation', 'company'];
+        const sortField = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
+        const sortDirection = sortOrder.toLowerCase() === 'asc' ? 'asc' : 'desc';
+
+        // Build filter conditions
+        const where = {};
+        
+        // Search across multiple fields
+        if (search) {
+            where.OR = [
+                { firstName: { contains: search, mode: 'insensitive' } },
+                { lastName: { contains: search, mode: 'insensitive' } },
+                { email: { contains: search, mode: 'insensitive' } },
+                { occupation: { contains: search, mode: 'insensitive' } },
+                { company: { contains: search, mode: 'insensitive' } },
+                { bio: { contains: search, mode: 'insensitive' } }
+            ];
+        }
+
+        // Apply filters
+        if (isActive !== undefined) {
+            where.isActive = isActive === 'true';
+        }
+        if (city) {
+            where.city = { contains: city, mode: 'insensitive' };
+        }
+        if (state) {
+            where.state = { contains: state, mode: 'insensitive' };
+        }
+        if (country) {
+            where.country = { contains: country, mode: 'insensitive' };
+        }
+        if (occupation) {
+            where.occupation = { contains: occupation, mode: 'insensitive' };
+        }
+        if (company) {
+            where.company = { contains: company, mode: 'insensitive' };
+        }
+
+        // Create cache key based on query parameters
+        const queryHash = Buffer.from(JSON.stringify({ where, sortField, sortDirection, skip, limitNum })).toString('base64');
+        const cacheKey = `users:query:${queryHash}`;
         
         // Try to get from cache first
-        const cachedUsers = await redisClient.get(cacheKey);
-        if (cachedUsers) {
+        const cachedResult = await redisClient.get(cacheKey);
+        if (cachedResult) {
             const endTime = performance.now();
-            console.log(`📦 Users fetched from cache in ${(endTime - startTime).toFixed(2)}ms`);
+            console.log(`📦 Users query fetched from cache in ${(endTime - startTime).toFixed(2)}ms`);
             
             return res.status(200).json({
-                success: true,
-                data: JSON.parse(cachedUsers),
-                count: JSON.parse(cachedUsers).length,
+                ...JSON.parse(cachedResult),
                 source: "cache",
                 responseTime: `${(endTime - startTime).toFixed(2)}ms`
             });
         }
 
-        // If not in cache, fetch from database
+        // Get total count for pagination
+        const totalUsers = await prisma.user.count({ where });
+
+        // Get paginated users
         const users = await prisma.user.findMany({
+            where,
             orderBy: {
-                createdAt: 'desc'
-            }
+                [sortField]: sortDirection
+            },
+            skip,
+            take: limitNum
         });
 
-        // Cache the result for 5 minutes
-        await redisClient.setEx(cacheKey, 300, JSON.stringify(users));
-        
-        const endTime = performance.now();
-        console.log(`🗄️ Users fetched from database in ${(endTime - startTime).toFixed(2)}ms`);
+        // Calculate pagination metadata
+        const totalPages = Math.ceil(totalUsers / limitNum);
+        const hasNextPage = pageNum < totalPages;
+        const hasPrevPage = pageNum > 1;
 
-        res.status(200).json({
+        const result = {
             success: true,
             data: users,
-            count: users.length,
-            source: "database",
+            pagination: {
+                currentPage: pageNum,
+                totalPages,
+                totalUsers,
+                usersPerPage: limitNum,
+                hasNextPage,
+                hasPrevPage,
+                nextPage: hasNextPage ? pageNum + 1 : null,
+                prevPage: hasPrevPage ? pageNum - 1 : null
+            },
+            filters: {
+                search,
+                isActive,
+                city,
+                state,
+                country,
+                occupation,
+                company
+            },
+            sorting: {
+                sortBy: sortField,
+                sortOrder: sortDirection
+            },
+            source: "database"
+        };
+
+        // Cache the result for 2 minutes (shorter TTL for queries)
+        await redisClient.setEx(cacheKey, 120, JSON.stringify(result));
+        
+        const endTime = performance.now();
+        console.log(`🗄️ Users query fetched from database in ${(endTime - startTime).toFixed(2)}ms`);
+
+        res.status(200).json({
+            ...result,
             responseTime: `${(endTime - startTime).toFixed(2)}ms`
         });
     } catch (error) {
@@ -162,6 +260,11 @@ export const createUser = async (req, res) => {
 
         // Invalidate cache after creating user
         await redisClient.del("users:all");
+        // Clear all query caches
+        const queryKeys = await redisClient.keys("users:query:*");
+        if (queryKeys.length > 0) {
+            await redisClient.del(queryKeys);
+        }
         console.log("🗑️ Cache invalidated after user creation");
 
         res.status(201).json({
@@ -232,6 +335,11 @@ export const updateUser = async (req, res) => {
         // Invalidate cache after updating user
         await redisClient.del(`user:${id}`);
         await redisClient.del("users:all");
+        // Clear all query caches
+        const queryKeys = await redisClient.keys("users:query:*");
+        if (queryKeys.length > 0) {
+            await redisClient.del(queryKeys);
+        }
         console.log(`🗑️ Cache invalidated after updating user ${id}`);
 
         res.status(200).json({
@@ -284,6 +392,11 @@ export const deleteUser = async (req, res) => {
         // Invalidate cache after deleting user
         await redisClient.del(`user:${id}`);
         await redisClient.del("users:all");
+        // Clear all query caches
+        const queryKeys = await redisClient.keys("users:query:*");
+        if (queryKeys.length > 0) {
+            await redisClient.del(queryKeys);
+        }
         console.log(`🗑️ Cache invalidated after deleting user ${id}`);
 
         res.status(200).json({
@@ -309,9 +422,10 @@ export const deleteUser = async (req, res) => {
 export const clearUserCache = async (req, res) => {
     try {
         const keys = await redisClient.keys("user:*");
+        const queryKeys = await redisClient.keys("users:query:*");
         const allUsersKey = "users:all";
         
-        const keysToDelete = [...keys, allUsersKey];
+        const keysToDelete = [...keys, ...queryKeys, allUsersKey];
         
         if (keysToDelete.length > 0) {
             await redisClient.del(keysToDelete);
@@ -320,7 +434,12 @@ export const clearUserCache = async (req, res) => {
         res.status(200).json({
             success: true,
             message: `Cache cleared successfully. Deleted ${keysToDelete.length} keys.`,
-            deletedKeys: keysToDelete
+            deletedKeys: {
+                userKeys: keys.length,
+                queryKeys: queryKeys.length,
+                allUsersKey: 1,
+                total: keysToDelete.length
+            }
         });
     } catch (error) {
         res.status(500).json({
