@@ -9,26 +9,22 @@ import {
     getCacheStats,
     seedDatabase
 } from "../controllers/userController.js";
-import { 
-    readRateLimit, 
-    strictRateLimit, 
-    adminRateLimit 
-} from "../middleware/rateLimitMiddleware.js";
+import { readRateLimiter, writeRateLimiter } from "../middleware/rateLimitMiddleware.js";
 
 const router = express.Router();
 
 // Cache management routes (admin)
-router.delete("/cache/clear", adminRateLimit, clearUserCache);
-router.get("/cache/stats", adminRateLimit, getCacheStats);
+router.delete("/cache/clear", writeRateLimiter, clearUserCache);
+router.get("/cache/stats", readRateLimiter, getCacheStats);
 
 // User CRUD routes
-router.get("/", readRateLimit, getUsers);                    // Paginated, filtered, sorted
-router.get("/:id", readRateLimit, getUserById);
-router.post("/", strictRateLimit, createUser);
-router.put("/:id", strictRateLimit, updateUser);
-router.delete("/:id", strictRateLimit, deleteUser);
+router.get("/", readRateLimiter, getUsers);                    // Paginated, filtered, sorted
+router.get("/:id", readRateLimiter, getUserById);
+router.post("/", writeRateLimiter, createUser);
+router.put("/:id", writeRateLimiter, updateUser);
+router.delete("/:id", writeRateLimiter, deleteUser);
 
 // Database seeding route (admin)
-router.post("/seed", adminRateLimit, seedDatabase);
+router.post("/seed", writeRateLimiter, seedDatabase);
 
 export default router;

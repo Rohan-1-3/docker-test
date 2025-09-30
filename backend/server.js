@@ -4,7 +4,7 @@ import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 import redisClient from "./services/redisService.js";
 import apiRoutes from "./routers/index.js";
-import { generalRateLimit } from "./middleware/rateLimitMiddleware.js";
+import { generalRateLimiter } from "./middleware/rateLimitMiddleware.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 const app = express();
 
 // Rate limiting (applied to all routes)
-app.use(generalRateLimit);
+app.use(generalRateLimiter);
 
 // Middleware
 app.use(cors());
