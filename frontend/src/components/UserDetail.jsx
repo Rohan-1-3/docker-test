@@ -84,7 +84,7 @@ const UserDetail = () => {
         <div className="mt-4">
           <Link
             to="/users"
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
           >
             ← Back to Users
           </Link>
@@ -102,7 +102,7 @@ const UserDetail = () => {
         <div className="mt-4">
           <Link
             to="/users"
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
           >
             ← Back to Users
           </Link>
@@ -118,7 +118,7 @@ const UserDetail = () => {
         <div className="flex items-center space-x-4">
           <Link
             to="/users"
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center transition-colors duration-200"
           >
             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -130,14 +130,14 @@ const UserDetail = () => {
         <div className="flex items-center space-x-3">
           <Link
             to={`/edit-user/${user.id}`}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-all duration-200"
           >
             Edit User
           </Link>
           <button
             onClick={handleDelete}
             disabled={deleting}
-            className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white text-sm font-medium rounded-md transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white text-sm font-medium rounded-md transition-all duration-200"
           >
             {deleting ? 'Deleting...' : 'Delete User'}
           </button>
@@ -191,7 +191,7 @@ const UserDetail = () => {
                     href={user.website} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="mt-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                    className="mt-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
                   >
                     {user.website}
                   </a>

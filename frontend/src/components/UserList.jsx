@@ -113,7 +113,7 @@ const UserList = () => {
       <button
         key={page}
         onClick={() => updateFilters({ page })}
-        className={`px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 transition-colors ${
+        className={`px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 transition-all duration-200 ${
           isActive
             ? 'bg-blue-600 text-white border-blue-600'
             : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -131,7 +131,7 @@ const UserList = () => {
         <button
           key="prev"
           onClick={() => updateFilters({ page: currentPage - 1 })}
-          className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-l-md transition-colors"
+          className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-l-md transition-all duration-200"
         >
           ‹
         </button>
@@ -173,7 +173,7 @@ const UserList = () => {
           }}
           min="1"
           max={totalPages}
-          className="w-12 px-2 py-1 text-sm text-center border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          className="w-12 px-2 py-1 text-sm text-center border border-gray-300 dark:border-gray-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 font-medium focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         />
       );
 
@@ -200,7 +200,7 @@ const UserList = () => {
         <button
           key="next"
           onClick={() => updateFilters({ page: currentPage + 1 })}
-          className="px-3 py-1 text-sm border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-r-md transition-colors"
+          className="px-3 py-1 text-sm border border-l-0 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-r-md transition-all duration-200"
         >
           ›
         </button>
@@ -250,7 +250,7 @@ const UserList = () => {
               value={currentFilters.search}
               onChange={(e) => updateFilters({ search: e.target.value })}
               placeholder="Search users..."
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
 
@@ -262,7 +262,7 @@ const UserList = () => {
             <select
               value={currentFilters.sortBy}
               onChange={(e) => updateFilters({ sortBy: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             >
               {sortOptions.map(option => (
                 <option key={option.value} value={option.value}>
@@ -280,7 +280,7 @@ const UserList = () => {
             <select
               value={currentFilters.sortOrder}
               onChange={(e) => updateFilters({ sortOrder: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             >
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
@@ -295,7 +295,7 @@ const UserList = () => {
             <select
               value={currentFilters.isActive}
               onChange={(e) => updateFilters({ isActive: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             >
               <option value="">All Users</option>
               <option value="true">Active</option>
@@ -309,10 +309,10 @@ const UserList = () => {
           <button
             type="button"
             onClick={() => setMoreFiltersOpen(!moreFiltersOpen)}
-            className="flex items-center cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+            className="flex items-center cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
           >
             <svg 
-              className={`w-4 h-4 mr-1 transition-transform ${moreFiltersOpen ? 'rotate-90' : ''}`} 
+              className={`w-4 h-4 mr-1 transition-transform duration-200 ${moreFiltersOpen ? 'rotate-90' : ''}`} 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -328,21 +328,21 @@ const UserList = () => {
                 value={currentFilters.city}
                 onChange={(e) => updateFilters({ city: e.target.value })}
                 placeholder="Filter by city..."
-                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               />
               <input
                 type="text"
                 value={currentFilters.state}
                 onChange={(e) => updateFilters({ state: e.target.value })}
                 placeholder="Filter by state..."
-                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               />
               <input
                 type="text"
                 value={currentFilters.occupation}
                 onChange={(e) => updateFilters({ occupation: e.target.value })}
                 placeholder="Filter by occupation..."
-                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               />
             </div>
           )}
@@ -352,7 +352,7 @@ const UserList = () => {
         {Object.values(currentFilters).some(value => value && value !== 'firstName' && value !== 'asc' && value !== 1 && value !== getItemsPerPage()) && (
           <button
             onClick={() => setSearchParams({})}
-            className="mt-3 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+            className="mt-3 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200"
           >
             Clear all filters
           </button>
@@ -377,18 +377,18 @@ const UserList = () => {
             {users?.map(user => (
               <div
                 key={user.id}
-                className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all group"
+                className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md hover:border-blue-200 dark:hover:border-blue-700 transition-all duration-200 group"
               >
                 <Link
                   to={`/users/${user.id}`}
-                  className="block hover:border-blue-300 dark:hover:border-blue-600"
+                  className="block hover:border-blue-300 dark:hover:border-blue-600 transition-colors duration-200"
                 >
                   <div className="flex items-center space-x-3 mb-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
                       {user.firstName?.[0]}{user.lastName?.[0]}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                      <h3 className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200">
                         {user.firstName} {user.lastName}
                       </h3>
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -405,7 +405,7 @@ const UserList = () => {
                       <p className="truncate">{user.city}, {user.state}</p>
                     )}
                     <div className="flex items-center justify-between">
-                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium transition-colors duration-200 ${
                         user.isActive 
                           ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-200'
                           : 'bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-200'
@@ -420,7 +420,7 @@ const UserList = () => {
                 <div className="flex items-center justify-end space-x-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
                   <Link
                     to={`/edit-user/${user.id}`}
-                    className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-colors"
+                    className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-all duration-200"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,7 +440,7 @@ const UserList = () => {
                         }
                       }
                     }}
-                    className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                    className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-all duration-200"
                   >
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

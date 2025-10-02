@@ -18,6 +18,18 @@ body {
   min-height: 100vh;
 }
 
+/* Global transition styles for form elements */
+input, select, textarea, button {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Smooth transitions for all elements with these classes */
+.transition-colors,
+.transition-all {
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+
 @import "tailwindcss";
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
