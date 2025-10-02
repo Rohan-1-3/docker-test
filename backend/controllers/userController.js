@@ -37,7 +37,7 @@ export const getUsers = async (req, res) => {
         const where = {};
         
         // Search across multiple fields
-        if (search) {
+        if (search && search.trim() !== '') {
             where.OR = [
                 { firstName: { contains: search, mode: 'insensitive' } },
                 { lastName: { contains: search, mode: 'insensitive' } },
@@ -49,22 +49,22 @@ export const getUsers = async (req, res) => {
         }
 
         // Apply filters
-        if (isActive !== undefined) {
+        if (isActive !== undefined && isActive.trim() !== '') {
             where.isActive = isActive === 'true';
         }
-        if (city) {
+        if (city && city.trim() !== '') {
             where.city = { contains: city, mode: 'insensitive' };
         }
-        if (state) {
+        if (state && state.trim() !== '') {
             where.state = { contains: state, mode: 'insensitive' };
         }
-        if (country) {
+        if (country && country.trim() !== '') {
             where.country = { contains: country, mode: 'insensitive' };
         }
-        if (occupation) {
+        if (occupation && occupation.trim() !== '') {
             where.occupation = { contains: occupation, mode: 'insensitive' };
         }
-        if (company) {
+        if (company && company.trim() !== '') {
             where.company = { contains: company, mode: 'insensitive' };
         }
 
